@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Académico - Univalle</title>
+
+<style>
+/* Estilos Base */
+body {
+    margin: 0;
+    background: #000;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* HEADER (Barra superior) */
+.header {
+    background: #8b0f2b;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-left a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    flex-grow: 1; 
+    text-align: center;
+}
+
+.header-space {
+    width: 35px; 
+}
+
+
+/* LOGIN - Conservado */
+.login {
+    height: calc(100vh - 64px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background: #1c1c1e;
+    padding: 22px;
+    border-radius: 14px;
+    width: 90%;
+    max-width: 360px;
+}
+
+.login-box h2 {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+/* TABLAS y BOTONES */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 8px;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    background: #2c2c2e;
+    border: none;
+    color: white;
+    border-radius: 6px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #8b0f2b;
+    border: none;
+    color: white;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.error {
+    margin-top: 10px;
+    color: #ff3b30;
+    text-align: center;
+    font-size: 13px;
+    display: none;
+}
+
+/* NOTAS */
+.app {
+    display: none;
+}
+
+.container {
+    padding: 16px;
+}
+
+.gestion-input {
+    background: #1c1c1e;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    padding: 12px 15px;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.gestion-input b {
+    color: white;
+}
+
+.card {
+    background: #1c1c1e;
+    padding: 15px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.subject-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.subject-header b {
+    font-size: 16px;
+    line-height: 1.2;
+}
+
+.card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+/* Columna de Nota Final (Izquierda) */
+.final-grade-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alineación a la izquierda */
+    width: 35%; 
+    text-align: left;
+}
+
+.final-grade-col .label {
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 5px;
+    color: #ccc; /* Texto Nota Final más tenue */
+}
+
+.final-score {
+    font-size: 38px;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+/* Ícono debajo de la nota y estilo de carácter simple */
+.final-icon {
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 1; 
+}
+
+.aprobado {
+    color: #1ed760; /* Verde */
+}
+
+.reprobado {
+    color: #ff3b30; /* Rojo */
+}
+
+/* Columna de Parciales (Derecha) */
+.parciales-col {
+    width: 65%; 
+}
+
+.parciales-col table {
+    font-size: 14px;
+}
+
+.parciales-col td:first-child {
+    text-align: left;
+    width: 60%;
+    padding: 3px 0;
+}
+
+.parciales-col td:last-child {
+    text-align: right;
+    width: 40%;
+    padding: 3px 0;
+}
+
+.grupo {
+    color: #ff3b30; 
+    font-weight: bold;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="header-left">
+        <a href="#">&lt; Atrás</a>
+    </div>
+    <h1>Notas</h1>
+    <div class="header-space"></div> 
+</div>
+
+<div class="login" id="login">
+    <div class="login-box">
+        <h2>Acceso al Sistema</h2>
+        <table>
+            <tr><td>Usuario</td><td><input type="text" value="CME2031784" readonly></td></tr>
+            <tr><td>Contraseña</td><td><input type="password" id="password"></td></tr>
+            <tr><td colspan="2"><button onclick="ingresar()">Ingresar</button></td></tr>
+        </table>
+        <div class="error" id="error">Contraseña incorrecta</div>
+    </div>
+</div>
+
+<div class="app" id="app">
+    <div class="container">
+        <div class="gestion-input">
+            Gestión: <b>Gestión 2/2025</b>
+        </div>
+
+        <div class="card">
+            <div class="subject-header">
+                <b>ÁLGEBRA II</b>
+                <span class="grupo">Grupo: A</span>
+            </div>
+            
+            <div class="card-content">
+                <div class="final-grade-col aprobado">
+                    <span class="label">Nota Final</span>
+                    <div class="final-score">82,0</div>
+                    <div class="final-icon">&#10003;</div> 
+                </div>
+                
+                <div class="parciales-col">
+                    <table>
+                        <tr><td>Parcial 1:</td><td>78,0</td></tr>
+                        <tr><td>Parcial 2:</td><td>85,0</td></tr>
+                        <tr><td>Parcial 3:</td><td>82,0</td></tr>
+                        <tr><td>Parcial 4:</td><td>--</td></tr>
+                        <tr><td>Exámen Final:</td><td>80,0</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="subject-header">
+                <b>CÁLCULO II</b>
+                <span class="grupo">Grupo: A</span>
+            </div>
+            
+            <div class="card-content">
+                <div class="final-grade-col aprobado">
+                    <span class="label">Nota Final</span>
+                    <div class="final-score">79,0</div>
+                    <div class="final-icon">&#10003;</div> 
+                </div>
+                
+                <div class="parciales-col">
+                    <table>
+                        <tr><td>Parcial 1:</td><td>75,0</td></tr>
+                        <tr><td>Parcial 2:</td><td>80,0</td></tr>
+                        <tr><td>Parcial 3:</td><td>82,0</td></tr>
+                        <tr><td>Parcial 4:</td><td>--</td></tr>
+                        <tr><td>Exámen Final:</td><td>70,0</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="subject-header">
+                <b>CINEMÁTICA Y DINÁMICA I</b>
+                <span class="grupo">Grupo: D</span>
+            </div>
+
+            <div class="card-content">
+                <div class="final-grade-col aprobado">
+                    <span class="label">Nota Final</span>
+                    <div class="final-score">87,0</div>
+                    <div class="final-icon">&#10003;</div>
+                </div>
+                
+                <div class="parciales-col">
+                    <table>
+                        <tr><td>Parcial 1:</td><td>88,0</td></tr>
+                        <tr><td>Parcial 2:</td><td>85,0</td></tr>
+                        <tr><td>Parcial 3:</td><td>88,0</td></tr>
+                        <tr><td>Parcial 4:</td><td>--</td></tr>
+                        <tr><td>Exámen Final:</td><td>85,0</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="subject-header">
+                <b>COMPONENTES Y MEDIDAS ELECTRÓNICAS</b>
+                <span class="grupo">Grupo: B</span>
+            </div>
+
+            <div class="card-content">
+                <div class="final-grade-col aprobado">
+                    <span class="label">Nota Final</span>
+                    <div class="final-score">76,0</div>
+                    <div class="final-icon">&#10003;</div>
+                </div>
+                
+                <div class="parciales-col">
+                    <table>
+                        <tr><td>Parcial 1:</td><td>72,0</td></tr>
+                        <tr><td>Parcial 2:</td><td>78,0</td></tr>
+                        <tr><td>Parcial 3:</td><td>80,0</td></tr>
+                        <tr><td>Parcial 4:</td><td>--</td></tr>
+                        <tr><td>Exámen Final:</td><td>75,0</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="subject-header">
+                <b>INGLÉS TÉCNICO II</b>
+                <span class="grupo">Grupo: A</span>
+            </div>
+
+            <div class="card-content">
+                <div class="final-grade-col aprobado">
+                    <span class="label">Nota Final</span>
+                    <div class="final-score">84,0</div>
+                    <div class="final-icon">&#10003;</div>
+                </div>
+                
+                <div class="parciales-col">
+                    <table>
+                        <tr><td>Parcial 1:</td><td>85,0</td></tr>
+                        <tr><td>Parcial 2:</td><td>82,0</td></tr>
+                        <tr><td>Parcial 3:</td><td>86,0</td></tr>
+                        <tr><td>Parcial 4:</td><td>--</td></tr>
+                        <tr><td>Exámen Final:</td><td>88,0</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="subject-header">
+                <b>BIOLOGÍA MOLECULAR Y CELULAR</b>
+                <span class="grupo">Grupo: D</span>
+            </div>
+            
+            <div class="card-content">
+                <div class="final-grade-col aprobado">
+                    <span class="label">Nota Final</span>
+                    <div class="final-score">62,0</div> 
+                    <div class="final-icon">&#10003;</div>
+                </div>
+                
+                <div class="parciales-col">
+                    <table>
+                        <tr><td>Parcial 1:</td><td>55,0</td></tr>
+                        <tr><td>Parcial 2:</td><td>63,0</td></tr>
+                        <tr><td>Parcial 3:</td><td>68,0</td></tr>
+                        <tr><td>Parcial 4:</td><td>--</td></tr>
+                        <tr><td>Exámen Final:</td><td>--</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+function ingresar() {
+    const pass = document.getElementById("password").value;
+
+    if (pass === "123123123") {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("app").style.display = "block";
+    } else {
+        document.getElementById("error").style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>
